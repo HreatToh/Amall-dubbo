@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>Amall-dubbo-service</artifactId>
-
+    <groupId>org.amall.dubbo</groupId>
+    <version>1.0-SNAPSHOT</version>
 
 </project>
