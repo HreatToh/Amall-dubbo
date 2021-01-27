@@ -2,10 +2,9 @@ package org.amall.dubbo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
-@ImportResource({"classpath:springboot-dubbo-config.xml"})
-@SpringBootApplication
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class AmallDubboWebApplication {
 
     public static void main(String[] args) {

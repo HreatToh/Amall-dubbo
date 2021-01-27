@@ -8,15 +8,20 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Amall-dubbo-service-impl" />
         <module name="Amall-dubbo-service" />
+        <module name="demo" />
         <module name="Amall-dubbo-web" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="demo" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Amall-dubbo-service" options="-parameters" />
       <module name="Amall-dubbo-service-impl" options="-parameters" />
       <module name="Amall-dubbo-web" options="-parameters" />
+      <module name="demo" options="-parameters" />
     </option>
   </component>
 </project>

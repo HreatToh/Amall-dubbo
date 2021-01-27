@@ -15,7 +15,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <Amall-dubbo-service.version>1.0-SNAPSHOT</Amall-dubbo-service.version>
+        <Amall-dubbo-service-impl.version>1.0-SNAPSHOT</Amall-dubbo-service-impl.version>
         <dubbo.version>1.0.0</dubbo.version>
         <zookeeper.version>0.7</zookeeper.version>
     </properties>
@@ -23,10 +23,21 @@
 
     <dependencies>
         <!--引入子项目-->
+        <!-- 项目依赖，去除springboot整合mybatis的jar包原因是该jar包中会自动注入sqlsession，需要在api层配置DataSource相关参数 -->
         <dependency>
             <groupId>org.amall.dubbo</groupId>
-            <artifactId>Amall-dubbo-service</artifactId>
-            <version>${Amall-dubbo-service.version}</version>
+            <artifactId>Amall-dubbo-service-impl</artifactId>
+            <version>${Amall-dubbo-service-impl.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mybatis.spring.boot</groupId>
+                    <artifactId>mybatis-spring-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

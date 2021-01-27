@@ -1,4 +1,5 @@
 package org.amall.dubbo.service;
 
-public interface UserService {
+public interface UserService extends BaseService{
+
 }
