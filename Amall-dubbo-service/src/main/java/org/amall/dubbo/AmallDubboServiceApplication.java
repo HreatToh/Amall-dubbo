@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AmallDubboServiceImplApplication {
+public class AmallDubboServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AmallDubboServiceImplApplication.class,args);
+        SpringApplication.run(AmallDubboServiceApplication.class,args);
     }
 }

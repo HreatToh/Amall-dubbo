@@ -11,18 +11,32 @@
 
     <artifactId>Amall-dubbo-web</artifactId>
     <groupId>org.amall.dubbo</groupId>
+    <name>Amall-dubbo-web</name>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
         <Amall-dubbo-service.version>1.0-SNAPSHOT</Amall-dubbo-service.version>
+        <dubbo.version>1.0.0</dubbo.version>
+        <zookeeper.version>0.7</zookeeper.version>
     </properties>
 
 
     <dependencies>
+        <!--引入子项目-->
         <dependency>
             <groupId>org.amall.dubbo</groupId>
             <artifactId>Amall-dubbo-service</artifactId>
             <version>${Amall-dubbo-service.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>Amall-dubbo</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

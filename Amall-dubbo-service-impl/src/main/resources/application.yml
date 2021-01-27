@@ -1,13 +1,24 @@
 server:
   port: 8001
-  servlet:
-    context-path: /
-
-
 
 spring:
+
+
+  dubbo:
+    application:
+      name: Amall-dubbo-service-impl
+    registry:
+      address: zookeeper://127.0.0.1:2181
+    protocol:
+      name: dubbo
+      port: 20880
+    scan: org.amall.dubbo.service.impl
+
+
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/amall?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
     password: root
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
