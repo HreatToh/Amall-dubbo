@@ -40,7 +40,7 @@ public class WebLoggerAspect {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         WebLogger webLogger = method.getAnnotation(WebLogger.class);
-        this.logger = LogManager.getLogger(webLogger.type());
+        this.logger = LogManager.getLogger(joinPoint.getTarget().getClass());
         this.value = webLogger.value();
     }
     /**
@@ -76,16 +76,25 @@ public class WebLoggerAspect {
         init(joinPoint);
         logger.info("=================Start=================");
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
+        if (ObjectUtil.isNotNull(attributes)){
+            HttpServletRequest request = attributes.getRequest();
 
-        logger.info("URL:{}",request.getRequestURL().toString());
-        logger.info("Description:{}",this.value);
-        logger.info("Method:{}",request.getMethod().toString());
+            logger.info("URL:{}",request.getRequestURL().toString());
+            logger.info("Description:{}",this.value);
+            logger.info("Method:{}",request.getMethod().toString());
 
-        //打印controller全路径及method
-        logger.info("Class Method：{},{}",joinPoint.getSignature().getDeclaringTypeName(),joinPoint.getSignature().getName());
-        logger.info("客户端IP：{}" , request.getRemoteAddr());
-        logger.info("请求参数：{}" , new Gson().toJson(joinPoint.getArgs()));
+            //打印controller全路径及method
+            logger.info("Class Method：{},{}",joinPoint.getSignature().getDeclaringTypeName(),joinPoint.getSignature().getName());
+            logger.info("客户端IP：{}" , request.getRemoteAddr());
+            logger.info("请求参数：{}" , new Gson().toJson(joinPoint.getArgs()));
+        }else{
+            logger.info("Description：{}",this.value);
+            //打印controller全路径及method
+            logger.info("Class：{}",joinPoint.getTarget().getClass());
+            logger.info("Method：{}",joinPoint.getSignature().getName());
+            logger.info("请求参数：{}" , new Gson().toJson(joinPoint.getArgs()));
+        }
+
     }
 
 
@@ -101,7 +110,7 @@ public class WebLoggerAspect {
         if (ObjectUtil.isNull(logger)){
             logger = LogManager.getLogger(this.getClass());
         }
-        logger.info("==================End=================");
+        logger.info("==================End==================");
     }
 
     /**
@@ -112,10 +121,8 @@ public class WebLoggerAspect {
      * @param throwable
      */
     @AfterThrowing(value = "log()", throwing = "throwable")
-    public void doAfterThrowing(Throwable throwable) {
-        if (ObjectUtil.isNull(logger)){
-            logger = LogManager.getLogger(this.getClass());
-        }
+    public void doAfterThrowing(JoinPoint joinPoint,Throwable throwable) {
+        init(joinPoint);
         // 保存异常日志记录
         logger.error("发生异常时间：{}" + LocalDateTime.now());
         logger.error("抛出异常：{}" + throwable.getMessage());

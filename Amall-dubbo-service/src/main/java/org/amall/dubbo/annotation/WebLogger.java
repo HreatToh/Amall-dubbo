@@ -8,7 +8,4 @@ import java.lang.annotation.*;
 public @interface WebLogger {
 
     String value() default "";
-
-    Class type() ;
-
 }

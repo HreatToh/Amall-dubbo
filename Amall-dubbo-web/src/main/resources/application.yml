@@ -1,5 +1,5 @@
 server:
-  port: 8002
+  port: 7010
 
 spring:
 
@@ -10,7 +10,7 @@ spring:
       address: zookeeper://127.0.0.1:2181
     protocol:
       name: dubbo
-      port: 20880
+      port: 20881
     scan: org.amall.dubbo.controller
 
 

@@ -16,8 +16,6 @@
 
     <properties>
         <Amall-dubbo-service-impl.version>1.0-SNAPSHOT</Amall-dubbo-service-impl.version>
-        <dubbo.version>1.0.0</dubbo.version>
-        <zookeeper.version>0.7</zookeeper.version>
     </properties>
 
 
@@ -30,8 +28,8 @@
             <version>${Amall-dubbo-service-impl.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.mybatis.spring.boot</groupId>
-                    <artifactId>mybatis-spring-boot-starter</artifactId>
+                    <groupId>com.baomidou</groupId>
+                    <artifactId>mybatis-plus-boot-starter</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>mysql</groupId>
