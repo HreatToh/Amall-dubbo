@@ -11,14 +11,17 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.amall.dubbo.annotation.WebLogger;
 import org.amall.dubbo.common.DubboConfig;
+import org.amall.dubbo.common.RedisConstants;
 import org.amall.dubbo.common.ResponseCode;
 import org.amall.dubbo.entity.PageEntity;
 import org.amall.dubbo.mapper.BaseMapper;
 import org.amall.dubbo.service.BaseService;
+import org.amall.dubbo.utils.StrUtils;
 import org.amall.dubbo.utils.TextTemplateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -36,6 +39,9 @@ public class BaseServiceImpl implements BaseService {
 
     @Autowired
     private BaseMapper baseMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @WebLogger(value = "查询所有对象")
     public List<Map<String, Object>> list(Map<String, Object> params) throws Exception {
@@ -104,29 +110,27 @@ public class BaseServiceImpl implements BaseService {
     public String getSql(String methodName,Map<String, Object> params) throws Exception{
         String sql = "";
         String sqlSelect = "";
-        String sqlId = SecureUtil.md5(StrUtil.format(SQL_ID_TEMPLATE,this.getClass(),methodName));
-        Map<String, Object> ayncSql = baseMapper.getAyncSqlById(sqlId);
-        if (CollUtil.isEmpty(ayncSql)){
-            ayncSql = MapUtil.newHashMap();
-        }
-        String sqlName = Convert.toStr(ayncSql.get("sqlName"),"");
-        String sqlContent = Convert.toStr(ayncSql.get("sqlContent"),"");
-        String SqlParams = Convert.toStr(ayncSql.get("SqlParams"),"");
-        String sqlCondition = Convert.toStr(ayncSql.get("sqlCondition")," 1=1 ");
+        String sqlId = StrUtils.md5(SQL_ID_TEMPLATE,this.getClass(),methodName);
+        Map<String, Object> ayncSql = getRedisAyncSqlById(sqlId);
+        String sqlName = StrUtils.emptyToDefault(ayncSql.get("sqlName"),"");
+        String sqlContent = StrUtils.emptyToDefault(ayncSql.get("sqlContent"),"");
+        String sqlParams = StrUtils.emptyToDefault(ayncSql.get("sqlParams"),"");
+        String sqlCondition = StrUtils.emptyToDefault(ayncSql.get("sqlCondition")," 1=1 ");
         logger.info("SQL_ID:{}",sqlId);
         logger.info("SQL_NAME:{}",sqlName);
         logger.info("SQL_CONTENT:{}",sqlContent);
-        logger.info("SQL_PARAMS:{}",SqlParams);
+        logger.info("SQL_PARAMS:{}",sqlParams);
         logger.info("SQL_CONDITION:{}",sqlCondition);
         if (StrUtil.isNotBlank(sqlContent)){
             sqlCondition = TextTemplateUtils.formatStr(sqlCondition,params);
-            sqlSelect = getConditionSqlByParams(SqlParams,params);
+            sqlSelect = getConditionSqlByParams(sqlParams,params);
             sql = TextTemplateUtils.formatStr(sqlContent,new Dict().set("condition",StrUtil.concat(true,sqlCondition,sqlSelect)));
         }else{
             sql = "SELECT '没有配置SQL' FROM DUAL";
         }
         return sql;
     }
+
 
     /**
      * 获取组合查询条件
@@ -148,5 +152,33 @@ public class BaseServiceImpl implements BaseService {
             }
         }
         return sql;
+    }
+
+    /**
+     * 从缓存取异步sql
+     * @param sqlId
+     * @return
+     * @throws Exception
+     */
+    public Map<String,Object> getRedisAyncSqlById(String sqlId) throws Exception{
+        Object o1 = null;
+        Map<String,Object> o = (Map<String, Object>) redisTemplate.opsForValue().get(RedisConstants.REDIS_AYNCSQL_KEY);
+        if(o!=null){
+            o1 = o.get(sqlId);
+        }else{
+            //双重检测机制 （如果集群的项目,可以了解一下分布式锁）
+            synchronized (this){
+                Map<String,Object> ayncSqlMap = CollUtil.newHashMap();
+                List<Map<String, Object>> ayncSqlAll = baseMapper.getAyncSqlAll();
+                for (Map<String,Object> map :ayncSqlAll) {
+                    String sql_id = StrUtils.emptyToDefault(map.get("sqlId"),"");
+                    ayncSqlMap.put(sql_id,map);
+                }
+                redisTemplate.opsForValue().set(RedisConstants.REDIS_AYNCSQL_KEY,ayncSqlMap);
+                o1 = ayncSqlMap.get(sqlId);
+
+            }
+        }
+        return o1 != null ? (Map<String, Object>) o1 :CollUtil.newHashMap();
     }
 }

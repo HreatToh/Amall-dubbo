@@ -7,10 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@Mapper
 public interface BaseMapper {
 
     @Select("SELECT * FROM AMALL_AYNC_SQL WHERE SQL_ID = #{sqlId}")
     public Map<String,Object> getAyncSqlById(@Param("sqlId") String sqlId) throws Exception;
+
+    @Select("SELECT * FROM AMALL_AYNC_SQL")
+    public List<Map<String,Object>> getAyncSqlAll() throws Exception;
 
     @Select("${sql}")
     List<Map<String, Object>> list(@Param("sql") String sql) throws Exception;

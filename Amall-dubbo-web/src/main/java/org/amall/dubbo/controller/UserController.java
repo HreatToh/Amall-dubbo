@@ -4,6 +4,8 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import org.amall.dubbo.common.DubboConfig;
 import org.amall.dubbo.service.UserService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -16,7 +18,8 @@ public class UserController {
 
 
     @GetMapping("test")
-    public void test(@RequestParam Map<String,Object> params) throws Exception {
-        userService.list(params);
+    @ResponseBody
+    public List test(@RequestParam Map<String,Object> params) throws Exception {
+        return userService.list(params);
     }
 }
