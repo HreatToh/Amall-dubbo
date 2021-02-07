@@ -1,11 +1,12 @@
 package org.amall.dubbo.utils;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.text.StrFormatter;
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
-import cn.hutool.crypto.digest.MD5;
+import cn.hutool.json.JSONUtil;
+
+import java.util.Map;
 
 public class StrUtils extends StrUtil{
 
@@ -47,4 +48,41 @@ public class StrUtils extends StrUtil{
     public static String md5(CharSequence template, Object... params) {
         return SecureUtil.md5(StrUtil.format(template,params));
     }
+
+    /**
+     * 转换为JSON字符串
+     *
+     * @param object 被转为JSON的对象
+     * @return JSON字符串
+     */
+    public static String toJson(Object object){
+        return JSONUtil.toJsonStr(object);
+    }
+
+    /**
+     * JSON字符串转为map类对象，转换异常将被抛出
+     *
+     * @param json JSON字符串
+     * @return map类对象
+     * @since 3.1.2
+     */
+    public static Map<String,Object> parseJsonForMap(String json){
+        if(JSONUtil.isJson(json)){
+            return JSONUtil.toBean(json,Map.class);
+        }else{
+            return CollUtil.newHashMap();
+        }
+    }
+
+    /**
+     * JSON字符串转为map类对象，转换异常将被抛出
+     *
+     * @param json JSON字符串
+     * @return map类对象
+     * @since 3.1.2
+     */
+    public static Map<String,Object> parseJsonForMap(Object json){
+        return parseJsonForMap(StrUtil.toString(json));
+    }
+
 }
