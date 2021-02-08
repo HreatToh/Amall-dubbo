@@ -2,8 +2,7 @@ server:
   port: 7020
 
 spring:
-
-
+  #配置dubbo注册中心
   dubbo:
     sever: true
     application:
@@ -14,12 +13,26 @@ spring:
       name: dubbo
       port: 20880
     scan: org.amall.dubbo.service.impl
-
+  #配置数据源信息
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/amall?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.jdbc.Driver
     username: root
     password: root
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 3
+      min-idle: 3
+      max-active: 10
+      max-wait: 60000
+      stat-view-servlet:
+        login-username: admin
+        login-password: 123456
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1
+
 
   #redis 地址
   redis:

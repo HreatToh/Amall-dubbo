@@ -1,11 +1,14 @@
 package org.amall.dubbo;
 
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
 import com.alibaba.dubbo.spring.boot.annotation.EnableDubboConfiguration;
+import net.hasor.spring.boot.EnableHasor;
+import net.hasor.spring.boot.EnableHasorWeb;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
+
+@EnableHasor
+@EnableHasorWeb
 @SpringBootApplication
 @EnableDubboConfiguration
 public class AmallDubboWebApplication {

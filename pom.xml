@@ -37,10 +37,22 @@
         <hutool.version>5.4.6</hutool.version>
         <beetl.version>3.3.2.RELEASE</beetl.version>
         <redis.version>1.4.7.RELEASE</redis.version>
+        <hasor-dataway.version>4.2.2</hasor-dataway.version>
     </properties>
 
     <dependencies>
-
+        <!--引入hasor依赖-->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-spring</artifactId>
+            <version>${hasor-dataway.version}</version>
+        </dependency>
+        <!--引入hasor-dataway依赖-->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-dataway</artifactId>
+            <version>${hasor-dataway.version}</version>
+        </dependency>
         <!--引入redis依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
